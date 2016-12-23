@@ -52,17 +52,22 @@ int gen_Data(){
 
 void setup() 
 {
-  analogReference(INTERNAL); // 1.1V ADC reference
+ // analogReference(INTERNAL); // 1.1V ADC reference
   randomSeed(analogRead(6));
-  Serial.begin(9600);
+  
+  Serial.begin(115200);
+  delay(5000);
+  Serial.println("Started");
   
   while (!rf69.init()){
     delay(100);
   }
-  
+  Serial.println(rf69.readTemp());
+  Serial.println("Init done");
   int packet_len = gen_Data();
+  Serial.println("Get data");
   rf69.send((uint8_t*)data, packet_len, rfm_power);
-  
+  Serial.println("Send done");
   rf69.setMode(RFM69_MODE_RX);
   rf69.SetLnaMode(RF_TESTLNA_SENSITIVE);
   

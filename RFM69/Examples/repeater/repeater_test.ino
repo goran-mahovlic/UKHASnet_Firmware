@@ -1,16 +1,13 @@
 /*
-
 UKHASnet Repeater Code by Phil Crump M0DNY
-
 Based on UKHASnet rf69_repeater by James Coxon M6JCX
-
 */
 
 #include <SPI.h>
 #include <string.h>
 #include "RFM69Config.h"
 #include "RFM69.h"
-#include "LowPower.h"
+//#include "LowPower.h"
 #include "NodeConfig.h"
 
 //************* Misc Setup ****************/
@@ -100,18 +97,18 @@ uint8_t gen_Data(){
 
 void setup() 
 {
-  analogReference(INTERNAL); // 1.1V ADC reference
+//  analogReference(INTERNAL); // 1.1V ADC reference
   randomSeed(analogRead(6));
   #ifdef ENABLE_UART_OUTPUT
    #ifdef UART_BAUDRATE
     Serial.begin(UART_BAUDRATE);
    #else 
-    Serial.begin(9600);
+    Serial.begin(115200);
    #endif
   #endif
   
   while (!rf69.init()){
-    LowPower.powerDown(SLEEP_120MS, ADC_OFF, BOD_OFF);
+//    LowPower.powerDown(SLEEP_120MS, ADC_OFF, BOD_OFF);
   }
   
   packet_len = gen_Data();
@@ -152,13 +149,14 @@ void setup()
 
 void loop()
 {
+  delay(10000);
   count++;
   
   if(zombie_mode==0) {
     rf69.setMode(RFM69_MODE_RX);
     
     for(i=0; i<255; i++) {
-      LowPower.idle(SLEEP_30MS, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, SPI_OFF, USART0_ON, TWI_OFF);
+//      LowPower.idle(SLEEP_30MS, ADC_OFF, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, SPI_OFF, USART0_ON, TWI_OFF);
       
       if (rf69.checkRx()) {
         rf69.recv(buf, &len);
@@ -215,7 +213,7 @@ void loop()
     
     // Low Power Sleep for 8 seconds
     rf69.setMode(RFM69_MODE_SLEEP);
-    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+//    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
   }
   
   if (count >= data_interval){

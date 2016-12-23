@@ -1,10 +1,10 @@
 //************* Define Node that you're compiling for ****************/
-#define SENSOR1
+#define YOURSENSOR
 
 //************* Node-specific config ****************/
-#ifdef SENSOR1
-char id[] = "CHANGEME";
-#define LOCATION_STRING "50.93567,-1.39123"
+#ifdef YOURSENSOR
+char id[] = "YOURSENSOR";
+#define LOCATION_STRING "00.000000,00.000000"
 byte num_repeats = '0'; //The number of hops the message will make in the network
 #define BEACON_INTERVAL 500 // Beacon Interval is ~x seconds
 uint8_t rfm_power = 20; // dBmW

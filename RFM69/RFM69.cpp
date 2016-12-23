@@ -19,14 +19,14 @@ RFM69::RFM69()
 
 boolean RFM69::init()
 {
-    _slaveSelectPin = 10;
+    _slaveSelectPin = PA4;
     pinMode(_slaveSelectPin, OUTPUT); // Init nSS
 
     delay(100);
 
     SPI.setDataMode(SPI_MODE0);
     SPI.setBitOrder(MSBFIRST);
-    SPI.setClockDivider(SPI_CLOCK_DIV2);
+    SPI.setClockDivider(SPI_CLOCK_DIV16);
     SPI.begin();
     
     // Set up device
@@ -55,6 +55,7 @@ uint8_t RFM69::spiRead(uint8_t reg)
     uint8_t val = SPI.transfer(0); // The written value is ignored, reg value is read
     
     digitalWrite(_slaveSelectPin, HIGH);
+    //Serial.println(val);
     return val;
 }
 
@@ -173,12 +174,14 @@ void RFM69::send(const uint8_t* data, uint8_t len, uint8_t power)
 	spiWrite(RFM69_REG_11_PA_LEVEL, RF_PALEVEL_PA0_OFF | RF_PALEVEL_PA1_ON | RF_PALEVEL_PA2_ON | paLevel);
     }
     // Wait for PA ramp-up
+    
     while(!(spiRead(RFM69_REG_27_IRQ_FLAGS1) & RF_IRQFLAGS1_TXREADY)) { };
     // Throw Buffer into FIFO, packet transmission will start automatically
     spiFifoWrite(_buf, _bufLen);
     // Clear MCU TX Buffer
     _bufLen = 0;
     // Wait for packet to be sent
+     
     while(!(spiRead(RFM69_REG_28_IRQ_FLAGS2) & RF_IRQFLAGS2_PACKETSENT)) { };
     // Return Transceiver to original mode
     setMode(oldMode);
